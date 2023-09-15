@@ -1,0 +1,33 @@
+@charset "UTF-8";
+
+.h1-title{
+	margin-top: 15px;
+}
+
+.mail-content{
+	padding: 10px 15px;
+	width: 100%;
+	height: 430px;
+	box-sizing: border-box;
+	background-color: #FFE0B2;	
+}
+.title, .email{
+	padding: 0px 5px;
+	width: 100%;
+	height: 30px;
+	margin-bottom: 5px;
+}
+.content {
+	padding: 0px 5px;
+	width: 100%;
+	height: 300px;
+}
+.mail-button {
+	float: right;
+	margin: 10px 0px;
+	height: 30px;
+}
+
+.tr{
+	cursor: pointer;
+}
