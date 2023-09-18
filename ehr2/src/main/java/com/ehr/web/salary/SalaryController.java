@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.ehr.web.attend.AttendDTO;
 import com.ehr.web.attend.Paging;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
 public class SalaryController {
@@ -52,7 +53,7 @@ public class SalaryController {
 			
 			Map<String, Object> slist = salaryService.slist(map);
 			model.addAttribute("slist", slist);
-			System.out.println(map);
+			//System.out.println(map);
 			
 			return "/salary";
 		}
@@ -77,7 +78,7 @@ public class SalaryController {
 	@PostMapping("/searchSal")
 	public String searchSal(@RequestParam Map<String, Object> map) {
 
-		System.out.println(map);
+		//System.out.println(map);
 		Map<String, Object> searchSal = salaryService.searchSal(map);
 		Map<String, Object> searchSal2 = salaryService.searchSal2(map);
 
@@ -91,7 +92,7 @@ public class SalaryController {
 	@GetMapping("salary2")
 	public String salary2(@RequestParam Map<String, Object> map, Model model, HttpSession session, @RequestParam(defaultValue = "1") int page) {
 		
-		System.out.println(map);
+		//System.out.println(map);
 		
 		if (util.obToInt(session.getAttribute("eno")) == util.obToInt(map.get("eno")) && 
 				session.getAttribute("eno") != null && session.getAttribute("eno") != "") {
@@ -99,7 +100,7 @@ public class SalaryController {
         int pageSize = 10;
         int eno = util.obToInt(session.getAttribute("eno"));
         int totalCnt = salaryService.getCount(eno); //전체 게시글 개수
-        System.out.println(totalCnt);
+        //System.out.println(totalCnt);
         model.addAttribute("totalCnt", totalCnt);
 
         Paging paging = new Paging(totalCnt, page, pageSize);
@@ -113,22 +114,24 @@ public class SalaryController {
         map.put("offset", (page - 1) * pageSize);
         map.put("eno", eno);
         map.put("pageSize", pageSize);
-        //System.out.println(map);
 
         List<Map<String, Object>> list = salaryService.list(map);
 		model.addAttribute("list", list);      
         model.addAttribute("ph", paging);
-		
+        
+        List<Map<String, Object>> eidList = salaryService.eidList();
+		model.addAttribute("eidList", eidList);   
+
 		return "/salary2";
 		}
 		
 		return "login";
 	}
 	
-	@PostMapping("salary2")
+	@PostMapping("/salary2")
 	public String save(@RequestParam Map<String, Object> map, Model model, HttpSession session) {
 		
-		System.out.println(map);
+		//System.out.println(map);
 		
 		if (util.obToInt(session.getAttribute("eno")) == util.obToInt(map.get("eno")) && 
 				session.getAttribute("eno") != null && session.getAttribute("eno") != "") {
@@ -142,4 +145,28 @@ public class SalaryController {
 		return "login";
 	}
 	
+	@ResponseBody
+	@PostMapping("/searchEmp")
+	public String searchEmp(@RequestParam(value="eid") int eid) {
+
+		Map<String, Object> elist = salaryService.searchEmp(eid);
+
+		JSONObject json = new JSONObject();
+		json.put("elist", elist);
+		System.out.println(elist);
+
+		return json.toString();
+	}
+	
+	@ResponseBody
+	@PostMapping("/deleteRows")
+	public String deleteRows(@RequestParam(value = "row[]") List<Integer> snoArr) {
+		
+		System.out.println(snoArr);
+		int result = salaryService.deleteRows(snoArr);
+		
+		JSONObject json = new JSONObject();
+
+		return json.toString();
+	}
 }

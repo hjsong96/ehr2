@@ -41,6 +41,24 @@
 		</where>
 	</select>
 
+	<delete id="deleteRows2" parameterType="List">
+	    DELETE FROM contract WHERE cno IN 
+	    <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+	        #{item}
+	    </foreach>
+	</delete>
 	
+	<select id="searchEmp2" parameterType="Integer" resultType="Map">
+        SELECT ename, edept, egrade, estate, eemail FROM employee WHERE eid=#{eid};
+    </select>
+    
+    <select id="eidList" resultType="Map">
+        SELECT eid FROM employee;
+    </select>
+    
+    <insert id="save" parameterType="Map"> 
+	    INSERT INTO salary (cstrdate, cenddate, cagree, eno) 
+	    VALUES (#{cstrdate}, #{cenddate}, #{cagree}, (SELECT eno FROM employee WHERE eid=#{eid}));
+	</insert>
 	
 </mapper>

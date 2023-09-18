@@ -46,6 +46,20 @@
 	<select id="getCount" parameterType="Integer" resultType="Integer">
         SELECT count(*) FROM adsalary;
     </select>
-
-	
+    
+    <select id="searchEmp" parameterType="Integer" resultType="Map">
+        SELECT ename, edept, egrade, estate FROM employee WHERE eid=#{eid};
+    </select>
+    
+    <select id="eidList" resultType="Map">
+        SELECT eid FROM employee;
+    </select>
+    
+	<delete id="deleteRows" parameterType="List">
+	    DELETE FROM salary WHERE sno IN 
+	    <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+	        #{item}
+	    </foreach>
+	</delete>
+    
 </mapper>

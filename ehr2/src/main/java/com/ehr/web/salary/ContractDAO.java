@@ -18,4 +18,12 @@ public interface ContractDAO {
 	Map<String, Object> slist(Map<String, Object> map);
 
 	List<Map<String, Object>> adclist(Map<String, Object> map);
+
+	int deleteRows2(List<Integer> snoArr);
+
+	Map<String, Object> searchEmp2(int eid);
+
+	List<Map<String, Object>> eidList();
+
+	int save(Map<String, Object> map);
 }

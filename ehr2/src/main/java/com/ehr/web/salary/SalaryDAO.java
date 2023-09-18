@@ -23,5 +23,11 @@ public interface SalaryDAO {
 	int save(Map<String, Object> map);
 
 	int getCount(int eno);
-	
+
+	Map<String, Object> searchEmp(int eid);
+
+	List<Map<String, Object>> eidList();
+
+	int deleteRows(List<Integer> snoArr);
+
 }

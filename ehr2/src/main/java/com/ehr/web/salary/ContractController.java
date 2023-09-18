@@ -86,12 +86,29 @@ public class ContractController {
 		List<Map<String, Object>> adclist = contractService.adclist(map);
 		model.addAttribute("adclist", adclist);
 		
+        List<Map<String, Object>> eidList = contractService.eidList();
+		model.addAttribute("eidList", eidList);  
+		
 		return "/contract2";
 		
 		}
 		
 		return "login";
+	}
+	
+	@PostMapping("/contract2")
+	public String save(@RequestParam Map<String, Object> map, Model model, HttpSession session) {
 		
+		if (util.obToInt(session.getAttribute("eno")) == util.obToInt(map.get("eno")) && 
+				session.getAttribute("eno") != null && session.getAttribute("eno") != "") {
+
+		int result = contractService.save(map);
+		
+		return "redirect:/contract2?eno="+session.getAttribute("eno");
+		
+		}
+		
+		return "login";
 	}
 	
 	@PostMapping("/mail")
@@ -100,6 +117,31 @@ public class ContractController {
 		util.htmlMailSender(map);
 
 		return "redirect:/main";
+	}
+	
+	@ResponseBody
+	@PostMapping("/deleteRows2")
+	public String deleteRows2(@RequestParam(value = "row[]") List<Integer> snoArr) {
+		
+		System.out.println(snoArr);
+		int result = contractService.deleteRows2(snoArr);
+		
+		JSONObject json = new JSONObject();
+
+		return json.toString();
+	}
+	
+	@ResponseBody
+	@PostMapping("/searchEmp2")
+	public String searchEmp2(@RequestParam(value="eid") int eid) {
+
+		Map<String, Object> elist = contractService.searchEmp2(eid);
+
+		JSONObject json = new JSONObject();
+		json.put("elist", elist);
+		System.out.println(elist);
+
+		return json.toString();
 	}
 	
 }

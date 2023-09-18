@@ -43,5 +43,17 @@ public class SalaryService {
 	public int getCount(int eno) {
 		return salaryDAO.getCount(eno);
 	}
-	
+
+	public Map<String, Object> searchEmp(int eid) {
+		return salaryDAO.searchEmp(eid);
+	}
+
+	public List<Map<String, Object>> eidList() {
+		return salaryDAO.eidList();
+	}
+
+	public int deleteRows(List<Integer> snoArr) {
+		return salaryDAO.deleteRows(snoArr);
+	}
+
 }

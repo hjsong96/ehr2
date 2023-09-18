@@ -12,59 +12,200 @@
 <script src="./js/jquery-3.7.0.min.js"></script>
 <script type="text/javascript">
 
-	$(function(){
-		$(".copy").click(function(){
-			
-			let csdel = $(this).find(".csdel").text(); 
-			let ceid = $(this).find(".ceid").text(); 
-			let cename = $(this).find(".cename").text(); 
-			let cedept = $(this).find(".cedept").text(); 
-			let cegrade = $(this).find(".cegrade").text(); 
-			let cestate = $(this).find(".cestate").text(); 
-			let csdate = $(this).find(".csdate").text(); 
-			let csbasesal = ($(this).find(".csbasesal").text()).replace(/[^\d]/,''); 
-			let cseat = ($(this).find(".cseat").text()).replace(/[^\d]/,''); 
-			let cssalary = ($(this).find(".cssalary").text()).replace(/[^\d]/,''); 
-			let csnation = ($(this).find(".csnation").text()).replace(/[^\d]/,''); 
-			let cshealth = ($(this).find(".cshealth").text()).replace(/[^\d]/,''); 
-			let cscare = ($(this).find(".cscare").text()).replace(/[^\d]/,''); 
-			let cshire = ($(this).find(".cshire").text()).replace(/[^\d]/,''); 
-			let cstake = ($(this).find(".cstake").text()).replace(/[^\d]/,''); 
-			let csreal = ($(this).find(".csreal").text()).replace(/[^\d]/,''); 
-			let csannualsal = ($(this).find(".csannualsal").text()).replace(/[^\d]/,''); 
-			let cscstrdate = $(this).find(".cscstrdate").text(); 
-			let cscenddate = $(this).find(".cscenddate").text(); 
-			
-			alert("복사되었습니다.");
-			
-			$(".sdel").val(csdel);
-			$(".eid").val(ceid);
-			$(".ename").val(cename);
-			$(".edept").val(cedept);
-			$(".egrade").val(cegrade);
-			$(".estate").val(cestate);
-			$(".sdate").val(csdate);
-			$(".sbasesal").val(csbasesal);
-			$(".seat").val(cseat);
-			$(".ssalary").val(cssalary);
-			$(".snation").val(csnation);
-			$(".shealth").val(cshealth);
-			$(".scare").val(cscare);
-			$(".shire").val(cshire);
-			$(".stake").val(cstake);
-			$(".sreal").val(csreal);
-			$(".sannualsal").val(csannualsal);
-			$(".scstrdate").val(cscstrdate);
-			$(".scenddate").val(cscenddate);
-			
-		});
+$(document).ready(function() {
+$(".employeeSelect").on("change", function() {
+    let eid = $(this).val();
+    if (eid !== "") {
+        $.ajax({
+            url: "./searchEmp", // 서버의 URL을 입력하세요.
+            type: "post",
+            data: { "eid": eid },
+            dataType: "json",
+            success: function (data) {
+                // 서버에서 받아온 데이터를 처리하는 코드
+                //alert(data.elist.ename)
+            	$(".ename").val(data.elist.ename);                
+            	$(".edept").val(data.elist.edept);                
+            	$(".egrade").val(data.elist.egrade);                
+            	$(".estate").val(data.elist.estate);                
+            },
+            error: function (error) {
+	            $(".retry").text("올바른 사번이 아닙니다. 5자리로 존재하는 사번을 다시 입력해주세요.").css({"color": "red", "font-weight": "bold"});
+	            $(".save").prop("disabled", true);
+            }
+        });
+    }
+});
+});
+
+/* $(document).ready(function() {
+    $(".eid").on("input", function() {
+	        let eid = $(".eid").val();
+    	
+	    $.ajax({
+	        url: "./searchEmp",
+	        type: "post",
+	        data: { "eid": eid},
+	        dataType: "json",
+	        success: function (data) {
+	        	
+	        	 $(".retry").text(""); // 올바른 값 입력 시 .retry 텍스트 초기화
+	             $(".save").prop("disabled", false); // 버튼 활성화
+	        },
+	
+	        error: function (error) {
+	            $(".retry").text("올바른 사번이 아닙니다. 5자리로 존재하는 사번을 다시 입력해주세요.").css({"color": "red", "font-weight": "bold"});
+	            $(".save").prop("disabled", true);
+	            
+	        }//에러 끝
+	    });//ajax 끝
+    }); //.eid input function 끝
+}); //document 끝 */
+
+$(document).ready(function() {
+    // sbasesal input과 seat input에 입력 값이 변경될 때마다 합을 계산하고 ssalary input에 할당
+    $(".sbasesal, .seat").on("input", function() {
+        // sbasesal과 seat 입력 값 가져오기
+        let sbasesal = parseInt($(".sbasesal").val().replace(/,/g, '')) || 0;
+        let seat = parseInt($(".seat").val().replace(/,/g, '')) || 0;
+
+        // 합계 계산
+        let ssalary = sbasesal + seat;
+
+        // 합계를 ssalary input에 설정
+        $(".ssalary").val(ssalary);
+        
+       let ssalary2 = $(".ssalary").val();
+        
+ 	   let snation = parseInt(ssalary2 * 0.045)|| 0;
+	   let shealth = parseInt(ssalary2 * 0.03545)|| 0;
+	   let scare = parseInt(ssalary2 * 0.00454)|| 0;;
+	   let shire = parseInt(ssalary2 * 0.009)|| 0;;
+	   let stake = snation + shealth + scare + shire;
+	   let sreal = ssalary - stake;
+	   let sannualsal = ssalary * 12;
+
+	   $(".snation").val(snation);
+	   $(".shealth").val(shealth);
+	   $(".scare").val(scare);
+	   $(".shire").val(shire);
+	   $(".stake").val(stake);
+	   $(".sreal").val(sreal);
+	   $(".sannualsal").val(sannualsal);
+	   
+    });
+});
+
+
+function getsno() {
+    let row = [];
+    
+    $("input[name=check]:checked").each(function() {
+        let sno = $(this).closest('tr').find('.csno').text();
+        row.push(sno);
+    });
+
+    if (row.length > 0) {
+        $.ajax({
+            url: "./deleteRows", // 서버의 URL을 입력하세요.
+            type: "post",
+            data: { "row" : row },
+            dataType: "json",
+            success: function (data) {
+                alert("선택한 행이 삭제되었습니다.");
+                $("input[name=check]:checked").prop("checked", false);
+                location.href="./salary2?eno="+${sessionScope.eno};
+            },
+            error: function (error) {
+                alert("삭제 중 오류가 발생했습니다.");
+            }
+        });
+    } else {
+        alert("삭제할 행을 선택해주세요.");
+    }
+}
+
+function getcontent() {
+	
+	let count = $("input[name=check]:checked");
+	
+    if(count.length > 1){
+    	alert("급여 복사는 하나만 가능합니다.");
+        $("input[name=check]:checked").prop("checked", false);
+		$("select[name='eid']").val("");
+		$(".ename").val("");
+		$(".edept").val("");
+		$(".egrade").val("");
+		$(".estate").val("");
+		$(".sdate").val("");
+		$(".sbasesal").val("");
+		$(".seat").val("");
+		$(".ssalary").val("");
+		$(".snation").val("");
+		$(".shealth").val("");
+		$(".scare").val("");
+		$(".shire").val("");
+		$(".stake").val("");
+		$(".sreal").val("");
+		$(".sannualsal").val("");
+		$(".scstrdate").val("");
+		$(".scenddate").val("");
+    	return false;
+    } 
+    
+    $("input[name=check]:checked").each(function() {
+    	
+		let csdel = $(this).closest('tr').find('.csdel').text();
+		let ceid = $(this).closest('tr').find('.ceid').text();
+		let cename = $(this).closest('tr').find('.cename').text();
+		let cedept = $(this).closest('tr').find('.cedept').text();
+		let cegrade = $(this).closest('tr').find('.cegrade').text();
+		let cestate = $(this).closest('tr').find('.cestate').text();
+		let csdate = $(this).closest('tr').find('.csdate').text();
+		let csbasesal = parseInt(($(this).closest('tr').find('.csbasesal').text()).replace(/,/g, '')) || 0;
+		let cseat = parseInt(($(this).closest('tr').find('.cseat').text()).replace(/,/g, '')) || 0;
+		let cssalary = parseInt(($(this).closest('tr').find('.cssalary').text()).replace(/,/g, '')) || 0;
+		let csnation = parseInt(($(this).closest('tr').find('.csnation').text()).replace(/,/g, '')) || 0;
+		let cshealth = parseInt(($(this).closest('tr').find('.cshealth').text()).replace(/,/g, '')) || 0;
+		let cscare = parseInt(($(this).closest('tr').find('.cscare').text()).replace(/,/g, '')) || 0;
+		let cshire = parseInt(($(this).closest('tr').find('.cshire').text()).replace(/,/g, '')) || 0;
+		let cstake = parseInt(($(this).closest('tr').find('.cstake').text()).replace(/,/g, '')) || 0;
+		let csreal = parseInt(($(this).closest('tr').find('.csreal').text()).replace(/,/g, '')) || 0;
+		let csannualsal = parseInt(($(this).closest('tr').find('.csannualsal').text()).replace(/,/g, '')) || 0;
+		let cscstrdate = $(this).closest('tr').find('.cscstrdate').text();
+		let cscenddate = $(this).closest('tr').find('.cscenddate').text();
 		
+		alert("복사되었습니다.");
+		
+		$("select[name='eid']").val(ceid);
+		$(".ename").val(cename);
+		$(".edept").val(cedept);
+		$(".egrade").val(cegrade);
+		$(".estate").val(cestate);
+		$(".sdate").val(csdate);
+		$(".sbasesal").val(csbasesal);
+		$(".seat").val(cseat);
+		$(".ssalary").val(cssalary);
+		$(".snation").val(csnation);
+		$(".shealth").val(cshealth);
+		$(".scare").val(cscare);
+		$(".shire").val(cshire);
+		$(".stake").val(cstake);
+		$(".sreal").val(csreal);
+		$(".sannualsal").val(csannualsal);
+		$(".scstrdate").val(cscstrdate);
+		$(".scenddate").val(cscenddate);
+    	
+    });
+
+}
+
+	$(function(){
+		$("#allCheck").click(function() {
+		    if($("#allCheck").is(":checked")) $("input[name=check]").prop("checked", true);
+		    else $("input[name=check]").prop("checked", false);
+		 });
 	});
-
-	
-	
-
-
 </script>
 </head>
 <body>
@@ -98,14 +239,16 @@
 					</li>
 				</ul>
 				<button class="search">조회</button>
+				<button type="button" class="delBtn" onclick="getsno()">삭제</button>
+				<button type="button" class="copyBtn" onclick="getcontent()">복사</button>
 				<input type="hidden" name="eno" value="${sessionScope.eno}">
 			</form>
 			<div class="middle-area">
 					<div class="table-area">
 						<table border="1">
 							<tr>
+								<td><input type="checkbox" id="allCheck"></td>
 								<td>No</td>
-								<td>삭제</td>
 								<td>사번</td>
 								<td>성명</td>
 								<td>부서</td>
@@ -126,9 +269,9 @@
 								<td>종료일</td>
 							</tr>
 							<c:forEach items="${list }" var="row">
-								<tr class="copy">
+								<tr>
+								<td class="csdel"><input type="checkBox" name="check" id="check" value=${row.sno }></td>
 								<td class="csno">${row.sno }</td>
-								<td class="csdel">${row.sdel }</td>
 								<td class="ceid">${row.eid }</td>
 								<td class="cename">${row.ename }</td>
 								<td class="cedept">${row.edept }</td>
@@ -151,6 +294,7 @@
 							</c:forEach>
 						</table>
 					</div>
+					
 					<div class="page_wrap">
 						<div class="page_nation">
 					 <div class="page_left_wrap">
@@ -169,12 +313,12 @@
 					
 					<h1>급여등록</h1>
 					<form action="./salary2" method="post">
-						<button>저장</button>
-						<input  name="eno" value="${sessionScope.eno}">
+						<button class="save">저장</button>
+						<input name="eno" value="${sessionScope.eno}">
+						<span class="retry"></span>
 					<table border="1">
 							<tr>
 								<td>No</td>
-								<td>삭제</td>
 								<td>사번</td>
 								<td>성명</td>
 								<td>부서</td>
@@ -196,25 +340,31 @@
 							</tr>
 								<tr>
 								<td></td>
-								<td><input class="sdel" name="sdel" value=""></td>
-								<td><input class="eid" name="eid" value=""></td>
-								<td><input class="ename" name="ename" value=""></td>
-								<td><input class="edept" name="edept" value=""></td>
-								<td><input class="egrade" name="egrade" value=""></td>
-								<td><input class="estate" name="estate" value=""></td>
-								<td><input class="sdate" name="sdate" value="" type="date" ></td>
-								<td><input class="sbasesal" name="sbasesal" value=""></td>
-								<td><input class="seat" name="seat" value=""></td>
-								<td><input class="ssalary" name="ssalary" value=""></td>
-								<td><input class="snation" name="snation" value=""></td>
-								<td><input class="shealth" name="shealth" value=""></td>
-								<td><input class="scare" name="scare" value=""></td>
-								<td><input class="shire" name="shire" value=""></td>
-								<td><input class="stake" name="stake" value=""></td>
-								<td><input class="sreal" name="sreal" value=""></td>
-								<td><input class="sannualsal" name="sannualsal" onchange = ></td>
-								<td><input class="scstrdate" name="scstrdate" value=""></td>
-								<td><input class="scenddate" name="scenddate" value=""></td>
+								<td>
+									<select name="eid" class="employeeSelect">
+										 <option value="">-- 선택 --</option>
+	   								<c:forEach items="${eidList}" var="row">
+	        							<option value="${row.eid}">${row.eid}</option>
+	   								</c:forEach>
+									</select>
+								</td>
+								<td><input class="ename" name="ename" ></td>
+								<td><input class="edept" name="edept" ></td>
+								<td><input class="egrade" name="egrade" ></td>
+								<td><input class="estate" name="estate" ></td>
+								<td><input class="sdate" name="sdate" type="date" ></td>
+								<td><input  class="sbasesal" name="sbasesal" ></td>
+								<td><input  class="seat" name="seat" ></td>
+								<td><input class="ssalary" name="ssalary"></td>
+								<td><input  class="snation" name="snation" ></td>
+								<td><input class="shealth" name="shealth"></td>
+								<td><input class="scare" name="scare" ></td>
+								<td><input class="shire" name="shire" ></td>
+								<td><input class="stake" name="stake" ></td>
+								<td><input class="sreal" name="sreal" ></td>
+								<td><input  class="sannualsal" name="sannualsal" ></td>
+								<td><input class="scstrdate" name="scstrdate" type="date"></td>
+								<td><input class="scenddate" name="scenddate" type="date"></td>
 								</tr>
 						</table>
 					</form>

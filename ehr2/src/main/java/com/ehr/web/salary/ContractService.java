@@ -36,5 +36,21 @@ public class ContractService {
 		return contractDAO.adclist(map);
 	}
 
+	public int deleteRows2(List<Integer> snoArr) {
+		return contractDAO.deleteRows2(snoArr);
+	}
+
+	public Map<String, Object> searchEmp2(int eid) {
+		return contractDAO.searchEmp2(eid);
+	}
+
+	public List<Map<String, Object>> eidList() {
+		return contractDAO.eidList();
+	}
+
+	public int save(Map<String, Object> map) {
+		return contractDAO.save(map);
+	}
+
 
 }
