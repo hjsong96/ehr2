@@ -27,12 +27,51 @@
 <script type="text/javascript">
 
 $(document).ready(function() {
-	
-	  $(".cagree, .cagreedate").prop("disabled", true);
-	
+    // 저장 버튼 클릭 시 이벤트 핸들러
+    $(".save").on("click", function() {
+        let isEmpty = false; // 빈 필드 여부를 나타내는 변수
+        let isValid = true; // 입력 값 유효성 여부를 나타내는 변수
+
+        // 각 input 필드를 검사
+        $(".ename, .edept, .egrade, .estate, .eemail, .cstrdate, .cenddate, .cagree").each(function() {
+            if ($(this).val() === "") {
+                isEmpty = true; // 빈 필드가 있으면 isEmpty를 true로 설정
+                return false; // 빈 필드를 찾았으므로 반복문을 종료
+            } else if(!(isNaN($(".ename").val())) || !(isNaN($(".edept").val())) || !(isNaN($(".eemail").val()))) {
+            	alert("성명/부서/이메일은 문자만 입력 가능합니다.");
+        		$("select[name='eid']").val("");
+        		$(".ename").val("");
+        		$(".edept").val("");
+        		$(".eemail").val("");
+                isValid = false;
+                return false;
+            } else if(isNaN($(".egrade").val()) || isNaN($(".estate").val()) || isNaN($(".cagree").val())){
+                alert("직급, 재직상태, 동의여부는 숫자가 아닌 값이 포함될 수 없습니다.");
+                $(".egrade").val("");
+    			$(".estate").val("");
+    			$(".cagree").val("");
+                isValid = false;
+                return false;
+            }
+        });
+
+        if (isEmpty || !isValid) {
+            // 빈 필드가 있는 경우 알람 띄우고 저장 버튼 비활성화
+            if (isEmpty) {
+                alert("모든 필드를 입력해주세요.");
+            }
+            return false; // 폼 전송을 중지
+        }  else {
+            // 입력값이 유효하고 빈 필드가 없는 경우 폼을 다시 전송
+            $(this).closest("form").submit();
+        }
+        
+    });
+});
+
+$(document).ready(function() {
 	$(".employeeSelect").on("change", function() {
 	    let eid = $(this).val();
-	    alert(eid);
 	    if (eid !== "") {
 	        $.ajax({
 	            url: "./searchEmp2", // 서버의 URL을 입력하세요.
@@ -117,6 +156,51 @@ function getsno() {
 
 						});
 	});
+	
+	function getcontent() {
+		let count = $("input[name=check]:checked");
+		
+	    if(count.length > 1){
+	    	alert("연봉 복사는 하나만 가능합니다.");
+			$("select[name='eid']").val("");
+			$(".ename").val("");
+			$(".edept").val("");
+			$(".egrade").val("");
+			$(".estate").val("");
+			$(".eemail").val("");
+			$(".cstrdate").val("");
+			$(".cenddate").val("");
+			$(".cagree").val("");
+	    	return false;
+	    } 
+	    
+	    $("input[name=check]:checked").each(function() {
+	    	
+			let eid2 = $(this).closest('tr').find('.eid2').text();
+			let ename2 = $(this).closest('tr').find('.ename2').text();
+			let edept2 = $(this).closest('tr').find('.edept2').text();
+			let egrade2 = $(this).closest('tr').find('.egrade2').text();
+			let estate2 = $(this).closest('tr').find('.estate2').text();
+			let eemail2 = $(this).closest('tr').find('.eemail2').text();
+			let cstrdate2 = $(this).closest('tr').find('.cstrdate2').text();
+			let cenddate2 = $(this).closest('tr').find('.cenddate2').text();
+			let cagree2 = $(this).closest('tr').find('.cagree2').text();
+			
+			alert("복사되었습니다.");
+			
+			$("select[name='eid']").val(eid2);
+			$(".ename").val(ename2);
+			$(".edept").val(edept2);
+			$(".egrade").val(egrade2);
+			$(".estate").val(estate2);
+			$(".eemail").val(eemail2);
+			$(".cstrdate").val(cstrdate2);
+			$(".cenddate").val(cenddate2);
+			$(".cagree").val(cagree2);
+	    });
+
+	}
+	
 </script>
 </head>
 <body>
@@ -143,7 +227,7 @@ function getsno() {
 					</select>
 					</li>
 					<li>사번<input name="eid"></li>
-					<li>성명<input name="ename" class="ename"></li>
+					<li>성명<input name="ename" class="ename3"></li>
 					<li>재직상태 <select name="estate">
 							<option value="0">재직</option>
 							<option value="1">퇴사</option>
@@ -182,16 +266,16 @@ function getsno() {
 					<tr class="modalOpen">
 						<td class="cdel"><input type="checkBox" name="check" id="check" value=${row.cno }></td>
 						<td class="cno">${row.cno }</td>
-						<td class="eid">${row.eid }</td>
-						<td class="ename">${row.ename }</td>
-						<td class="edept">${row.edept }</td>
-						<td class="egrade">${row.egrade }</td>
-						<td class="estate">${row.estate }</td>
-						<td class="eemail">${row.eemail }</td>
-						<td class="cstrdate">${row.cstrdate }</td>
-						<td class="cenddate">${row.cenddate }</td>
-						<td class="cagree">${row.cagree }</td>
-						<td class="cagreedate">${row.cagreedate }</td>
+						<td class="eid2">${row.eid }</td>
+						<td class="ename2">${row.ename }</td>
+						<td class="edept2">${row.edept }</td>
+						<td class="egrade2">${row.egrade }</td>
+						<td class="estate2">${row.estate }</td>
+						<td class="eemail2">${row.eemail }</td>
+						<td class="cstrdate2">${row.cstrdate }</td>
+						<td class="cenddate2">${row.cenddate }</td>
+						<td class="cagree2">${row.cagree }</td>
+						<td class="cagreedate2">${row.cagreedate }</td>
 					</tr>
 				</c:forEach>
 			</table>
@@ -213,7 +297,7 @@ function getsno() {
 						</div>
 				   </div>
 				   
-				<h1>급여등록</h1>
+				<h1>연봉등록</h1>
 					<form action="./contract2" method="post">
 						<button class="save">저장</button>
 						<input name="eno" value="${sessionScope.eno}">
@@ -230,7 +314,6 @@ function getsno() {
 								<td>시작일</td>
 								<td>종료일</td>
 								<td>동의</td>
-								<td>동의일자</td>
 							</tr>
 								<tr>
 								<td></td>
@@ -249,8 +332,7 @@ function getsno() {
 								<td><input class="eemail" name="eemail" ></td>
 								<td><input class="cstrdate" name="cstrdate" type="date"></td>
 								<td><input class="cenddate" name="cenddate" type="date"></td>
-								<td><input class="cagree" name="cagree" value="0"></td>
-								<td><input class="cagreedate" name="cagreedate"></td>
+								<td><input class="cagree" name="cagree2"></td>
 								</tr>
 						</table>
 					</form>

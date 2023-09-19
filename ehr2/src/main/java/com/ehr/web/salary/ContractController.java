@@ -68,7 +68,6 @@ public class ContractController {
 		
 		int eno = util.getEno(session);
 		map.put("eno", eno);
-		System.out.println(map);
 		
 		int result = contractService.aggrCheck(map);
 		model.addAttribute("result",result);
@@ -99,6 +98,7 @@ public class ContractController {
 	@PostMapping("/contract2")
 	public String save(@RequestParam Map<String, Object> map, Model model, HttpSession session) {
 		
+		System.out.println(map);
 		if (util.obToInt(session.getAttribute("eno")) == util.obToInt(map.get("eno")) && 
 				session.getAttribute("eno") != null && session.getAttribute("eno") != "") {
 
@@ -123,7 +123,7 @@ public class ContractController {
 	@PostMapping("/deleteRows2")
 	public String deleteRows2(@RequestParam(value = "row[]") List<Integer> snoArr) {
 		
-		System.out.println(snoArr);
+		//System.out.println(snoArr);
 		int result = contractService.deleteRows2(snoArr);
 		
 		JSONObject json = new JSONObject();

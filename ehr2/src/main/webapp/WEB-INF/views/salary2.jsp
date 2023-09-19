@@ -13,6 +13,54 @@
 <script type="text/javascript">
 
 $(document).ready(function() {
+    // 저장 버튼 클릭 시 이벤트 핸들러
+    $(".save").on("click", function() {
+        let isEmpty = false; // 빈 필드 여부를 나타내는 변수
+        let isValid = true; // 입력 값 유효성 여부를 나타내는 변수
+
+        // 각 input 필드를 검사
+        $(".ename, .edept, .egrade, .estate, .sdate, .sbasesal, .seat, .ssalary, .snation, .shealth, .scare, .shire, .stake, .sreal, .sannualsal, .scstrdate, .scenddate").each(function() {
+            if ($(this).val() === "") {
+                isEmpty = true; // 빈 필드가 있으면 isEmpty를 true로 설정
+                return false; // 빈 필드를 찾았으므로 반복문을 종료
+            } else if(!(isNaN($(".ename").val())) || !(isNaN($(".edept").val()))) {
+            	alert("성명과 부서는 문자만 입력 가능합니다.");
+        		$("select[name='eid']").val("");
+        		$(".ename").val("");
+        		$(".edept").val("");
+                isValid = false;
+                return false;
+            } else if(isNaN($(".egrade").val()) || isNaN($(".estate").val()) || isNaN($(".sbasesal").val()) || isNaN($(".seat").val()) || isNaN($(".ssalary").val()) || isNaN($(".snation").val()) || isNaN($(".shealth").val()) || isNaN($(".scare").val()) || isNaN($(".shire").val()) || isNaN($(".stake").val()) || isNaN($(".sreal").val()) || isNaN($(".sannualsal").val())){
+                alert("성명/부서/직급/재직상태/급여일자 등에는 숫자가 아닌 값이 포함될 수 없습니다.");
+        		$(".sbasesal").val("");
+        		$(".seat").val("");
+        		$(".ssalary").val("");
+        		$(".snation").val("");
+        		$(".shealth").val("");
+        		$(".scare").val("");
+        		$(".shire").val("");
+        		$(".stake").val("");
+        		$(".sreal").val("");
+        		$(".sannualsal").val("");
+                isValid = false;
+                return false;
+            }
+        });
+
+        if (isEmpty || !isValid) {
+            // 빈 필드가 있는 경우 알람 띄우고 저장 버튼 비활성화
+            if (isEmpty) {
+                alert("모든 필드를 입력해주세요.");
+            }
+            return false; // 폼 전송을 중지
+        }  else {
+            // 입력값이 유효하고 빈 필드가 없는 경우 폼을 다시 전송
+            $(this).closest("form").submit();
+        }
+        
+    });
+	
+	
 $(".employeeSelect").on("change", function() {
     let eid = $(this).val();
     if (eid !== "") {
@@ -125,8 +173,14 @@ function getsno() {
     }
 }
 
+$(function(){
+	$("#allCheck").click(function() {
+	    if($("#allCheck").is(":checked")) $("input[name=check]").prop("checked", true);
+	    else $("input[name=check]").prop("checked", false);
+	 });
+});
+
 function getcontent() {
-	
 	let count = $("input[name=check]:checked");
 	
     if(count.length > 1){
@@ -200,12 +254,6 @@ function getcontent() {
 
 }
 
-	$(function(){
-		$("#allCheck").click(function() {
-		    if($("#allCheck").is(":checked")) $("input[name=check]").prop("checked", true);
-		    else $("input[name=check]").prop("checked", false);
-		 });
-	});
 </script>
 </head>
 <body>
@@ -231,7 +279,7 @@ function getcontent() {
 					</select>
 					</li>
 					<li>사번<input name="eid"></li>
-					<li>성명<input name="ename" class="ename"></li>
+					<li>성명<input name="ename"></li>
 					<li>재직상태 <select name="estate">
 							<option value="0">재직</option>
 							<option value="1">퇴사</option>

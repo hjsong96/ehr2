@@ -39,6 +39,7 @@
 			<if test="ename != null">AND ename LIKE CONCAT('%', #{ename}, '%') </if>
 			<if test="cagree != null">AND cagree LIKE CONCAT('%', #{cagree}, '%') </if>
 		</where>
+		ORDER BY cno DESC LIMIT 0, 10; 
 	</select>
 
 	<delete id="deleteRows2" parameterType="List">
@@ -57,8 +58,8 @@
     </select>
     
     <insert id="save" parameterType="Map"> 
-	    INSERT INTO salary (cstrdate, cenddate, cagree, eno) 
-	    VALUES (#{cstrdate}, #{cenddate}, #{cagree}, (SELECT eno FROM employee WHERE eid=#{eid}));
+	    INSERT INTO contract (cstrdate, cenddate, cagree, eno) 
+	    VALUES (#{cstrdate}, #{cenddate}, #{cagree2}, (SELECT eno FROM employee WHERE eid=#{eid}));
 	</insert>
 	
 </mapper>
