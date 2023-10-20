@@ -17,7 +17,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 public class Util {
 	public int obToInt(Object object) {
 		int result = 0;
-		
+		  
 		try {
 			result = Integer.parseInt((String.valueOf(object)));
 		} catch (Exception e) {
