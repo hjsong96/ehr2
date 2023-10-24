@@ -6,7 +6,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Salary</title>
+<title>Salary</title>   
 <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/xeicon@2.3.3/xeicon.min.css">
 <link href="./css/style.css" rel="stylesheet" />
 <link href="./css/modal.css" rel="stylesheet" />
